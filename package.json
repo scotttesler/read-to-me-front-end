@@ -1,20 +1,42 @@
 {
-  "author": "",
-  "description": "",
-  "keywords": [],
+  "author": {
+    "name": "Scott Tesler",
+    "email": "scottiet123@gmail.com",
+    "url": "https://scotttesler.com/"
+  },
+  "bugs": {
+    "email": "scottiet123@gmail.com",
+    "url": "https://github.com/scotttesler/read-to-me-frontend/issues"
+  },
+  "description": "Front end for ReadToMe.app",
+  "homepage": "https://github.com/scotttesler/read-to-me-frontend",
+  "keywords": [
+    "read",
+    "read-to-me",
+    "text-to-speech",
+    "tts"
+  ],
   "license": "ISC",
   "main": "index.js",
   "name": "read-to-me-frontend",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/stesler/read-to-me-frontend.git"
+  },
   "scripts": {
+    "deploy": "next build && next export && cd out && now -p && now alias $(pbpaste) read-to-me",
     "dev": "next",
-    "build": "next build",
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "version": "1.0.0",
   "dependencies": {
+    "isomorphic-unfetch": "^2.1.1",
+    "lodash": "^4.17.10",
     "next": "^6.1.1",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "react-markdown": "^3.4.1",
+    "reactstrap": "^6.4.0"
   }
 }

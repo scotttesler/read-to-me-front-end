@@ -29,7 +29,7 @@
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "2.0.1",
+  "version": "2.0.2",
   "dependencies": {
     "isomorphic-unfetch": "^2.1.1",
     "lodash": "^4.17.10",

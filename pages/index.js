@@ -14,7 +14,7 @@ import {
   Label
 } from "reactstrap";
 
-const DEFAULT_ERROR_MESSAGE = "An error occurred.";
+const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
 class Index extends React.Component {

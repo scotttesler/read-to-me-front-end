@@ -14,7 +14,8 @@ import {
   Label
 } from "reactstrap";
 
-const ERROR_MESSAGE_DEFAULT = "An error occurred.";
+const DEFAULT_ERROR_MESSAGE = "An error occurred.";
+const DEFAULT_VOICE_ID = "Joey";
 
 class Index extends React.Component {
   state = {
@@ -22,7 +23,8 @@ class Index extends React.Component {
     articleUrl: "",
     audioUrl: "",
     errorMessage: "",
-    isLoading: false
+    isLoading: false,
+    voiceId: DEFAULT_VOICE_ID
   };
 
   handleArticleUrlChange = evt => {
@@ -46,7 +48,10 @@ class Index extends React.Component {
 
         try {
           const httpOptions = {
-            body: JSON.stringify({ url: this.state.articleUrl }),
+            body: JSON.stringify({
+              articleUrl: this.state.articleUrl,
+              voiceId: this.state.voiceId
+            }),
             headers: { "Content-Type": "application/json" },
             method: "POST"
           };
@@ -68,7 +73,7 @@ class Index extends React.Component {
             httpOptions
           )).json()).url;
         } catch (err) {
-          errorMessage = ERROR_MESSAGE_DEFAULT;
+          errorMessage = DEFAULT_ERROR_MESSAGE;
         }
 
         this.setState({
@@ -79,6 +84,10 @@ class Index extends React.Component {
         });
       }
     );
+  };
+
+  handleVoiceIDChange = evt => {
+    this.setState({ voiceId: evt.target.value });
   };
 
   render() {
@@ -120,6 +129,35 @@ class Index extends React.Component {
                 type="text"
                 value={this.state.articleUrl}
               />
+            </FormGroup>
+            <FormGroup>
+              <Label for="voiceIdSelect">
+                <strong>Voice</strong>
+              </Label>
+              <Input
+                id="voiceIdSelect"
+                name="select"
+                onChange={this.handleVoiceIDChange}
+                type="select"
+                value={this.state.voiceId}
+              >
+                <option value="Joey">Joey (US)</option>
+                <option value="Justin">Justin (US)</option>
+                <option value="Matthew">Matthew (US)</option>
+                <option value="Ivy">Ivy (US)</option>
+                <option value="Joanna">Joanna (US)</option>
+                <option value="Kendra">Kendra (US)</option>
+                <option value="Kimberly">Kimberly (US)</option>
+                <option value="Salli">Salli (US)</option>
+                <option value="Brian">Brian (British)</option>
+                <option value="Amy">Amy (British)</option>
+                <option value="Emma">Emma (British)</option>
+                <option value="Russell">Russell (AU)</option>
+                <option value="Nicole">Nicole (AU)</option>
+                <option value="Geraint">Geraint (Welsh)</option>
+                <option value="Aditi">Aditi (Indian)</option>
+                <option value="Raveena">Raveena (Indian)</option>
+              </Input>
             </FormGroup>
             <FormGroup style={{ textAlign: "center" }}>
               <Button type="submit">{buttonText}</Button>

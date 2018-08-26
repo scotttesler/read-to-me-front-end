@@ -28,6 +28,10 @@ export default class MyDocument extends Document {
             integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
             rel="stylesheet"
           />
+          <link
+            href="https://unpkg.com/react-rangeslider/umd/rangeslider.min.css"
+            rel="stylesheet"
+          />
           <title>Read To Me</title>
         </Head>
         <body>

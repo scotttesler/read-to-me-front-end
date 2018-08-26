@@ -1,9 +1,10 @@
-const _get = require("lodash/get");
+import _get from "lodash/get";
 import fetch from "isomorphic-unfetch";
 import querystring from "querystring";
 import Head from "next/head";
 import React from "react";
-const ReactMarkdown = require("react-markdown");
+import ReactMarkdown from "react-markdown";
+import Slider from "react-rangeslider";
 import {
   Alert,
   Button,
@@ -21,6 +22,7 @@ class Index extends React.Component {
   state = {
     articleMarkdown: "",
     articleUrl: "",
+    audioSpeed: 1,
     audioUrl: "",
     errorMessage: "",
     isLoading: false,
@@ -29,6 +31,13 @@ class Index extends React.Component {
 
   handleArticleUrlChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
+  };
+
+  handleAudioSpeedChange = value => {
+    const audioSpeed = Math.round(value * 100) / 100;
+    this.setState({ audioSpeed: audioSpeed }, () => {
+      this.refs.audio.playbackRate = audioSpeed;
+    });
   };
 
   handleSubmit = evt => {
@@ -97,9 +106,23 @@ class Index extends React.Component {
 
     const audioComponent = this.state.audioUrl.length ? (
       <div style={{ padding: "2rem 0", textAlign: "center" }}>
-        <audio autoPlay controls src={this.state.audioUrl}>
+        <audio autoPlay controls ref="audio" src={this.state.audioUrl}>
           Your browser does not support the <code>audio</code> element.
         </audio>
+      </div>
+    ) : null;
+
+    const audioSpeedComponent = this.state.audioUrl.length ? (
+      <div>
+        <span>
+          <strong>Audio speed:</strong>
+        </span>
+        <Slider
+          max={3}
+          onChange={this.handleAudioSpeedChange}
+          step={0.1}
+          value={this.state.audioSpeed}
+        />
       </div>
     ) : null;
 
@@ -164,6 +187,7 @@ class Index extends React.Component {
             </FormGroup>
           </Form>
           {audioComponent}
+          {audioSpeedComponent}
           {articleComponent}
         </div>
       </Container>

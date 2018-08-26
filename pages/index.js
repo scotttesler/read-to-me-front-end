@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 
 const DEFAULT_ERROR_MESSAGE = "An error occurred.";
-const DEFAULT_VOICE_ID = "Joey";
+const DEFAULT_VOICE_ID = "Matthew";
 
 class Index extends React.Component {
   state = {
@@ -141,9 +141,9 @@ class Index extends React.Component {
                 type="select"
                 value={this.state.voiceId}
               >
+                <option value="Matthew">Matthew (US)</option>
                 <option value="Joey">Joey (US)</option>
                 <option value="Justin">Justin (US)</option>
-                <option value="Matthew">Matthew (US)</option>
                 <option value="Ivy">Ivy (US)</option>
                 <option value="Joanna">Joanna (US)</option>
                 <option value="Kendra">Kendra (US)</option>

@@ -2,6 +2,7 @@ import _get from "lodash/get";
 import fetch from "isomorphic-unfetch";
 import querystring from "querystring";
 import Head from "next/head";
+import Link from "next/link";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import Slider from "react-rangeslider";
@@ -14,20 +15,33 @@ import {
   Input,
   Label
 } from "reactstrap";
+import { withRouter } from "next/router";
 
+const API_URL_BASE =
+  "https://bf254ucpeg.execute-api.us-east-1.amazonaws.com/dev";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
 class Index extends React.Component {
-  state = {
-    articleMarkdown: "",
-    articleUrl: "",
-    audioSpeed: 1,
-    audioUrl: "",
-    errorMessage: "",
-    isLoading: false,
-    voiceId: DEFAULT_VOICE_ID
-  };
+  constructor(props) {
+    super(props);
+
+    const articleUrl = _get(this, "props.router.query.articleUrl", "");
+
+    this.state = {
+      articleMarkdown: "",
+      articleUrl,
+      audioSpeed: 1,
+      audioUrl: "",
+      errorMessage: "",
+      isLoading: false,
+      voiceId: DEFAULT_VOICE_ID
+    };
+  }
+
+  componentDidMount() {
+    if (this.state.articleUrl) this.handleSubmit({ preventDefault: () => {} });
+  }
 
   handleArticleUrlChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
@@ -66,7 +80,7 @@ class Index extends React.Component {
           };
 
           const articleJson = await (await fetch(
-            "https://bf254ucpeg.execute-api.us-east-1.amazonaws.com/dev/convert-article-to-markdown",
+            `${API_URL_BASE}/convert-article-to-markdown`,
             httpOptions
           )).json();
 
@@ -78,9 +92,14 @@ class Index extends React.Component {
           }
 
           audioUrl = (await (await fetch(
-            "https://bf254ucpeg.execute-api.us-east-1.amazonaws.com/dev/convert-article-to-audio",
+            `${API_URL_BASE}/convert-article-to-audio`,
             httpOptions
           )).json()).url;
+
+          this.props.router.replace({
+            pathname: "/",
+            query: { articleUrl: this.state.articleUrl }
+          });
         } catch (err) {
           errorMessage = DEFAULT_ERROR_MESSAGE;
         }
@@ -195,4 +214,4 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+export default withRouter(Index);

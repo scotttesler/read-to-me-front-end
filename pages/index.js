@@ -23,24 +23,24 @@ const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
 class Index extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const articleUrl = _get(this, "props.router.query.articleUrl", "");
-
-    this.state = {
-      articleMarkdown: "",
-      articleUrl,
-      audioSpeed: 1,
-      audioUrl: "",
-      errorMessage: "",
-      isLoading: false,
-      voiceId: DEFAULT_VOICE_ID
-    };
-  }
+  state = {
+    articleMarkdown: "",
+    articleUrl: "",
+    audioSpeed: 1,
+    audioUrl: "",
+    errorMessage: "",
+    isLoading: false,
+    voiceId: DEFAULT_VOICE_ID
+  };
 
   componentDidMount() {
-    if (this.state.articleUrl) this.handleSubmit({ preventDefault: () => {} });
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has("articleUrl")) {
+      this.setState({ articleUrl: urlParams.get("articleUrl") }, () => {
+        this.handleSubmit({ preventDefault: () => {} });
+      });
+    }
   }
 
   handleArticleUrlChange = evt => {

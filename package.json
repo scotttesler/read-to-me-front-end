@@ -8,6 +8,16 @@
     "email": "scottiet123@gmail.com",
     "url": "https://github.com/scotttesler/read-to-me-frontend/issues"
   },
+  "dependencies": {
+    "isomorphic-unfetch": "^2.1.1",
+    "lodash": "^4.17.10",
+    "next": "^6.1.1",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-markdown": "^3.4.1",
+    "react-rangeslider": "^2.2.0",
+    "reactstrap": "^6.4.0"
+  },
   "description": "Front end for ReadToMe.app",
   "homepage": "https://github.com/scotttesler/read-to-me-frontend",
   "keywords": [
@@ -30,15 +40,5 @@
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "3.0.0",
-  "dependencies": {
-    "isomorphic-unfetch": "^2.1.1",
-    "lodash": "^4.17.10",
-    "next": "^6.1.1",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "react-markdown": "^3.4.1",
-    "react-rangeslider": "^2.2.0",
-    "reactstrap": "^6.4.0"
-  }
+  "version": "3.0.0"
 }

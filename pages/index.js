@@ -1,4 +1,3 @@
-import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import fetch from "isomorphic-unfetch";
 import Head from "next/head";
@@ -24,20 +23,33 @@ const DEFAULT_VOICE_ID = "Matthew";
 class Index extends React.Component {
   state = {
     article: {},
+    articleUrl: "",
     audioSpeed: 1,
     audioUrl: "",
     errorMessage: "",
-    formArticleUrl: "",
     isLoading: false,
     voiceId: DEFAULT_VOICE_ID
   };
 
-  componentDidMount() {
-    const urlParams = new URLSearchParams(window.location.search);
+  parseQueryString(queryString = window.location.search) {
+    const parsedQueryString = {};
+    const searchParams = new URLSearchParams(queryString);
 
-    if (urlParams.has("articleUrl")) {
-      this.setState({ formArticleUrl: urlParams.get("articleUrl") }, () => {
-        this.handleSubmit({ preventDefault: () => {} });
+    for (let p of searchParams) {
+      if (!_isEmpty(p[1])) parsedQueryString[p[0]] = p[1];
+    }
+
+    return parsedQueryString;
+  }
+
+  componentDidMount() {
+    const newState = this.parseQueryString();
+
+    if (!_isEmpty(newState)) {
+      this.setState(newState, () => {
+        if (this.state.articleUrl) {
+          this.handleSubmit({ preventDefault: () => {} });
+        }
       });
     }
   }
@@ -48,7 +60,14 @@ class Index extends React.Component {
 
   handleAudioSpeedChange = value => {
     const audioSpeed = Math.round(value * 100) / 100;
+
     this.setState({ audioSpeed: audioSpeed }, () => {
+      const query = this.parseQueryString();
+
+      this.props.router.replace("/", {
+        query: { ...query, audioSpeed }
+      });
+
       this.refs.audio.playbackRate = audioSpeed;
     });
   };
@@ -70,8 +89,15 @@ class Index extends React.Component {
         isLoading: true
       },
       async () => {
-        const articleUrl = this.state.formArticleUrl;
-        this.props.router.replace(`/?articleUrl=${articleUrl}`);
+        const articleUrl = this.state.articleUrl;
+        const query = this.parseQueryString();
+        this.props.router.replace("/", {
+          query: {
+            ...query,
+            articleUrl,
+            voiceId: this.state.voiceId
+          }
+        });
 
         if (_isEmpty(articleUrl)) {
           this.setState({ isLoading: false });
@@ -93,12 +119,17 @@ class Index extends React.Component {
           if (!res.ok) throw new Error("Erroring converting website to audio.");
           audioUrl = (await res.json()).url;
 
-          this.setState({
-            article,
-            audioUrl,
-            formArticleUrl: article.canonicalLink,
-            isLoading: false
-          });
+          this.setState(
+            {
+              article,
+              audioUrl,
+              articleUrl: article.canonicalLink,
+              isLoading: false
+            },
+            () => {
+              this.refs.audio.playbackRate = this.state.audioSpeed;
+            }
+          );
         } catch (err) {
           console.error(err);
           this.setState({
@@ -116,7 +147,7 @@ class Index extends React.Component {
 
   render() {
     const article = this.state.article;
-    console.log({ state: this.state });
+
     const errorComponent = this.state.errorMessage.length ? (
       <Alert color="danger">{this.state.errorMessage}</Alert>
     ) : null;
@@ -138,7 +169,7 @@ class Index extends React.Component {
           max={3}
           onChange={this.handleAudioSpeedChange}
           step={0.1}
-          value={this.state.audioSpeed}
+          value={Number(this.state.audioSpeed)}
         />
       </div>
     ) : null;
@@ -168,15 +199,15 @@ class Index extends React.Component {
           {errorComponent}
           <Form onSubmit={this.handleSubmit}>
             <FormGroup>
-              <Label for="formArticleUrl">
+              <Label for="articleUrl">
                 <strong>Enter an article URL:</strong>
               </Label>
               <Input
-                id="formArticleUrl"
-                name="formArticleUrl"
+                id="articleUrl"
+                name="articleUrl"
                 onChange={this.handleArticleUrlChange}
                 type="text"
-                value={this.state.formArticleUrl}
+                value={this.state.articleUrl}
               />
             </FormGroup>
             <FormGroup>

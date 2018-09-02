@@ -1,10 +1,9 @@
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
 import fetch from "isomorphic-unfetch";
-import querystring from "querystring";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import ReactMarkdown from "react-markdown";
 import Slider from "react-rangeslider";
 import {
   Alert,
@@ -24,11 +23,11 @@ const DEFAULT_VOICE_ID = "Matthew";
 
 class Index extends React.Component {
   state = {
-    articleMarkdown: "",
-    articleUrl: "",
+    article: {},
     audioSpeed: 1,
     audioUrl: "",
     errorMessage: "",
+    formArticleUrl: "",
     isLoading: false,
     voiceId: DEFAULT_VOICE_ID
   };
@@ -37,7 +36,7 @@ class Index extends React.Component {
     const urlParams = new URLSearchParams(window.location.search);
 
     if (urlParams.has("articleUrl")) {
-      this.setState({ articleUrl: urlParams.get("articleUrl") }, () => {
+      this.setState({ formArticleUrl: urlParams.get("articleUrl") }, () => {
         this.handleSubmit({ preventDefault: () => {} });
       });
     }
@@ -57,59 +56,56 @@ class Index extends React.Component {
   handleSubmit = evt => {
     evt.preventDefault();
 
-    let articleMarkdown = "";
+    let articleText = "";
+    let articleTitle = "";
     let audioUrl = "";
     let errorMessage = "";
 
     this.setState(
-      { articleMarkdown, audioUrl, errorMessage, isLoading: true },
+      {
+        articleText,
+        articleTitle,
+        audioUrl,
+        errorMessage,
+        isLoading: true
+      },
       async () => {
-        if (this.state.articleUrl.trim().length === 0) {
+        const articleUrl = this.state.formArticleUrl;
+        this.props.router.replace(`/?articleUrl=${articleUrl}`);
+
+        if (_isEmpty(articleUrl)) {
           this.setState({ isLoading: false });
           return;
         }
 
         try {
           const httpOptions = {
-            body: JSON.stringify({
-              articleUrl: this.state.articleUrl,
-              voiceId: this.state.voiceId
-            }),
+            body: JSON.stringify({ articleUrl, voiceId: this.state.voiceId }),
             headers: { "Content-Type": "application/json" },
             method: "POST"
           };
 
-          const articleJson = await (await fetch(
-            `${API_URL_BASE}/convert-article-to-markdown`,
-            httpOptions
-          )).json();
+          let res = await fetch(`${API_URL_BASE}/parse-website`, httpOptions);
+          if (!res.ok) throw new Error("Erroring parsing website.");
+          const article = await res.json();
 
-          const title = articleJson.title;
-          const markdown = articleJson.markdown;
+          res = await fetch(`${API_URL_BASE}/website-to-audio`, httpOptions);
+          if (!res.ok) throw new Error("Erroring converting website to audio.");
+          audioUrl = (await res.json()).url;
 
-          if (markdown.trim().length) {
-            articleMarkdown = `# ${title}\n${markdown}`;
-          }
-
-          audioUrl = (await (await fetch(
-            `${API_URL_BASE}/convert-article-to-audio`,
-            httpOptions
-          )).json()).url;
-
-          this.props.router.replace({
-            pathname: "/",
-            query: { articleUrl: this.state.articleUrl }
+          this.setState({
+            article,
+            audioUrl,
+            formArticleUrl: article.canonicalLink,
+            isLoading: false
           });
         } catch (err) {
-          errorMessage = DEFAULT_ERROR_MESSAGE;
+          console.error(err);
+          this.setState({
+            errorMessage: DEFAULT_ERROR_MESSAGE,
+            isLoading: false
+          });
         }
-
-        this.setState({
-          articleMarkdown,
-          audioUrl,
-          errorMessage,
-          isLoading: false
-        });
       }
     );
   };
@@ -119,6 +115,8 @@ class Index extends React.Component {
   };
 
   render() {
+    const article = this.state.article;
+    console.log({ state: this.state });
     const errorComponent = this.state.errorMessage.length ? (
       <Alert color="danger">{this.state.errorMessage}</Alert>
     ) : null;
@@ -145,8 +143,17 @@ class Index extends React.Component {
       </div>
     ) : null;
 
-    const articleComponent = this.state.articleMarkdown.length ? (
-      <ReactMarkdown source={this.state.articleMarkdown} />
+    const articleComponent = !_isEmpty(article) ? (
+      <React.Fragment>
+        <h1>{article.title}</h1>
+        <img
+          alt="Article image"
+          src={article.image}
+          style={{ width: "100%" }}
+        />
+        <strong>by {article.author.join(", ")}</strong>
+        <p style={{ whiteSpace: "pre-wrap" }}>{article.text}</p>
+      </React.Fragment>
     ) : null;
 
     const buttonText = this.state.isLoading ? (
@@ -161,15 +168,15 @@ class Index extends React.Component {
           {errorComponent}
           <Form onSubmit={this.handleSubmit}>
             <FormGroup>
-              <Label for="articleUrl">
+              <Label for="formArticleUrl">
                 <strong>Enter an article URL:</strong>
               </Label>
               <Input
-                id="articleUrl"
-                name="articleUrl"
+                id="formArticleUrl"
+                name="formArticleUrl"
                 onChange={this.handleArticleUrlChange}
                 type="text"
-                value={this.state.articleUrl}
+                value={this.state.formArticleUrl}
               />
             </FormGroup>
             <FormGroup>

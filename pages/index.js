@@ -16,7 +16,7 @@ import {
 import { withRouter } from "next/router";
 
 const API_URL_BASE =
-  "https://p8gwj6kna0.execute-api.us-east-1.amazonaws.com/production";
+  "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 

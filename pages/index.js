@@ -162,8 +162,8 @@ class Index extends React.Component {
     ) : null;
 
     const audioSpeedComponent = this.state.audioUrl.length ? (
-      <div style={{ margin: "0 auto", width: "280px" }}>
-        <div>Audio speed</div>
+      <div style={{ margin: "0 auto", width: "250px" }}>
+        <div style={{ marginBottom: "1rem" }}>Audio speed</div>
         <InputRange
           maxValue={3}
           minValue={0}
@@ -320,16 +320,15 @@ class Index extends React.Component {
 
             .input-range__label--min,
             .input-range__label--max {
-              bottom: -1.4rem;
               position: absolute;
             }
 
             .input-range__label--min {
-              left: 0;
+              left: -0.7rem;
             }
 
             .input-range__label--max {
-              right: 0;
+              right: -0.7rem;
             }
 
             .input-range__label--value {

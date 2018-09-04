@@ -1,17 +1,20 @@
 import _isEmpty from "lodash/isEmpty";
+import _get from "lodash/get";
 import fetch from "isomorphic-unfetch";
 import Head from "next/head";
+import InputRange from "react-input-range";
 import Link from "next/link";
 import React from "react";
-import Slider from "react-rangeslider";
 import {
   Alert,
   Button,
+  Col,
   Container,
   Form,
   FormGroup,
   Input,
-  Label
+  Label,
+  Row
 } from "reactstrap";
 import { withRouter } from "next/router";
 
@@ -153,37 +156,47 @@ class Index extends React.Component {
     ) : null;
 
     const audioComponent = this.state.audioUrl.length ? (
-      <div style={{ padding: "2rem 0", textAlign: "center" }}>
-        <audio autoPlay controls ref="audio" src={this.state.audioUrl}>
-          Your browser does not support the <code>audio</code> element.
-        </audio>
-      </div>
+      <audio autoPlay controls ref="audio" src={this.state.audioUrl}>
+        Your browser does not support the <code>audio</code> element.
+      </audio>
     ) : null;
 
     const audioSpeedComponent = this.state.audioUrl.length ? (
-      <div>
-        <span>
-          <strong>Audio speed:</strong>
-        </span>
-        <Slider
-          max={3}
+      <div style={{ margin: "0 auto", width: "280px" }}>
+        <div>Audio speed</div>
+        <InputRange
+          maxValue={3}
+          minValue={0}
           onChange={this.handleAudioSpeedChange}
           step={0.1}
-          value={Number(this.state.audioSpeed)}
+          value={this.state.audioSpeed}
         />
       </div>
     ) : null;
 
+    const articleImage = _get(article, "image", "").length ? (
+      <img alt="Article image" src={article.image} style={{ width: "100%" }} />
+    ) : null;
+
+    const authors = _get(article, "author.0", "");
+    const authorComponent =
+      authors.length && !authors.includes("{{") ? (
+        <div style={{ textAlign: "center" }}>
+          by{" "}
+          <span style={{ fontStyle: "italic" }}>
+            {article.author.join(", ")}
+          </span>
+        </div>
+      ) : null;
     const articleComponent = !_isEmpty(article) ? (
       <React.Fragment>
-        <h1>{article.title}</h1>
-        <img
-          alt="Article image"
-          src={article.image}
-          style={{ width: "100%" }}
-        />
-        <strong>by {article.author.join(", ")}</strong>
-        <p style={{ whiteSpace: "pre-wrap" }}>{article.text}</p>
+        <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+          {article.title}
+        </h1>
+        {authorComponent}
+        <p style={{ padding: "2rem 0", whiteSpace: "pre-wrap" }}>
+          {article.text}
+        </p>
       </React.Fragment>
     ) : null;
 
@@ -194,8 +207,11 @@ class Index extends React.Component {
     );
 
     return (
-      <Container>
-        <div style={{ margin: "0 auto", paddingTop: "3%", width: "90%" }}>
+      <div>
+        <Container>
+          <h1 style={{ padding: "2rem 0 4rem 0", textAlign: "center" }}>
+            ReadToMe
+          </h1>
           {errorComponent}
           <Form onSubmit={this.handleSubmit}>
             <FormGroup>
@@ -243,11 +259,125 @@ class Index extends React.Component {
               <Button type="submit">{buttonText}</Button>
             </FormGroup>
           </Form>
-          {audioComponent}
-          {audioSpeedComponent}
+          <Row style={{ padding: "2rem 0" }}>
+            <Col sm="6" style={{ textAlign: "center" }}>
+              {audioComponent}
+            </Col>
+            <Col sm="6">{audioSpeedComponent}</Col>
+          </Row>
+        </Container>
+        {articleImage}
+        <Container>
           {articleComponent}
-        </div>
-      </Container>
+          <p style={{ padding: "2rem 0 0 0", textAlign: "center" }}>
+            Built with{" "}
+            <span style={{ color: "red", fontSize: "1.2rem" }}>♥</span> by{" "}
+            <a href="https://github.com/scotttesler" target="_href">
+              Scott Tesler
+            </a>
+          </p>
+          <style global jsx>{`
+            .input-range__slider {
+              appearance: none;
+              background: #3f51b5;
+              border: 1px solid #3f51b5;
+              border-radius: 100%;
+              cursor: pointer;
+              display: block;
+              height: 1rem;
+              margin-left: -0.5rem;
+              margin-top: -0.65rem;
+              outline: none;
+              position: absolute;
+              top: 50%;
+              transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+              width: 1rem;
+            }
+            .input-range__slider:active {
+              transform: scale(1.3);
+            }
+            .input-range__slider:focus {
+              box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2);
+            }
+            .input-range--disabled .input-range__slider {
+              background: #cccccc;
+              border: 1px solid #cccccc;
+              box-shadow: none;
+              transform: none;
+            }
+
+            .input-range__slider-container {
+              transition: left 0.3s ease-out;
+            }
+
+            .input-range__label {
+              color: #aaaaaa;
+              font-family: "Helvetica Neue", san-serif;
+              font-size: 0.8rem;
+              transform: translateZ(0);
+              white-space: nowrap;
+            }
+
+            .input-range__label--min,
+            .input-range__label--max {
+              bottom: -1.4rem;
+              position: absolute;
+            }
+
+            .input-range__label--min {
+              left: 0;
+            }
+
+            .input-range__label--max {
+              right: 0;
+            }
+
+            .input-range__label--value {
+              position: absolute;
+              top: -1.8rem;
+            }
+
+            .input-range__label-container {
+              left: -50%;
+              position: relative;
+            }
+            .input-range__label--max .input-range__label-container {
+              left: 50%;
+            }
+
+            .input-range__track {
+              background: #eeeeee;
+              border-radius: 0.3rem;
+              cursor: pointer;
+              display: block;
+              height: 0.3rem;
+              position: relative;
+              transition: left 0.3s ease-out, width 0.3s ease-out;
+            }
+            .input-range--disabled .input-range__track {
+              background: #eeeeee;
+            }
+
+            .input-range__track--background {
+              left: 0;
+              margin-top: -0.15rem;
+              position: absolute;
+              right: 0;
+              top: 50%;
+            }
+
+            .input-range__track--active {
+              background: #3f51b5;
+            }
+
+            .input-range {
+              height: 1rem;
+              position: relative;
+              width: 100%;
+            }
+          `}</style>
+        </Container>
+      </div>
     );
   }
 }

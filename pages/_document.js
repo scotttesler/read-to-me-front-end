@@ -12,24 +12,20 @@ export default class MyDocument extends Document {
             name="viewport"
           />
           <link
+            href="/static/favicon.ico"
             rel="shortcut icon"
             type="image/x-icon"
-            href="/static/favicon.ico"
           />
           <link
             crossOrigin="anonymous"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-            integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+            href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/journal/bootstrap.min.css"
+            integrity="sha384-5C8TGNupopdjruopVTTrVJacBbWqxHK9eis5DB+DYE6RfqIJapdLBRUdaZBTq7mE"
             rel="stylesheet"
           />
           <link
             crossOrigin="anonymous"
             href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
             integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
-            rel="stylesheet"
-          />
-          <link
-            href="https://unpkg.com/react-rangeslider/umd/rangeslider.min.css"
             rel="stylesheet"
           />
           <title>Read To Me</title>

@@ -50,7 +50,7 @@ class Index extends React.Component {
     this.setState({ audioSpeed }, () => {
       const query = parseQueryString();
 
-      this.props.router.replace("/", { query: { ...query, audioSpeed } });
+      this.props.router.push("/", { query: { ...query, audioSpeed } });
 
       this.refs.audio.playbackRate = audioSpeed;
     });
@@ -69,7 +69,7 @@ class Index extends React.Component {
       async () => {
         const articleUrl = this.state.articleUrl;
         const query = parseQueryString();
-        this.props.router.replace("/", {
+        this.props.router.push("/", {
           query: { ...query, articleUrl, voiceId: this.state.voiceId }
         });
 

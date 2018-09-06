@@ -34,7 +34,7 @@
   },
   "scripts": {
     "deploy": "next build && next export && cd out && now -p",
-    "deploy-with-alias": "next build && next export && cd out && now -p && now alias $(pbpaste) read-to-me",
+    "deploy-with-alias": "next build && next export && cd out && now -p && now alias $(pbpaste) readtome.app",
     "dev": "next",
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1"

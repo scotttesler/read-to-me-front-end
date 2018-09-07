@@ -1,0 +1,12 @@
+{
+  "rules": [
+    {
+      "dest": "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com",
+      "method": ["POST"],
+      "pathname": "/production/**"
+    },
+    {
+      "dest": "https://read-to-me.now.sh"
+    }
+  ]
+}

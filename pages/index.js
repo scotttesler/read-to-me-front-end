@@ -12,8 +12,7 @@ import { Col, Container, Row } from "reactstrap";
 import { parseQueryString } from "../lib/url";
 import { withRouter } from "next/router";
 
-const API_URL_BASE =
-  "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production";
+const API_URL_BASE = process.env.IS_STATIC ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production" : "/production";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 

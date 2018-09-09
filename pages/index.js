@@ -12,7 +12,10 @@ import { Col, Container, Row } from "reactstrap";
 import { parseQueryString } from "../lib/url";
 import { withRouter } from "next/router";
 
-const API_URL_BASE = process.env.IS_STATIC ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production" : "/production";
+let API_URL_BASE =
+  process.env.NODE_ENV !== "production" || process.env.IS_STATIC
+    ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production"
+    : "/production";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
@@ -147,10 +150,10 @@ class Index extends React.Component {
             voiceId={this.state.voiceId}
           />
           <Row style={{ padding: "2rem 0" }}>
-            <Col sm="6" style={{ textAlign: "center" }}>
+            <Col md="6" style={{ textAlign: "center" }}>
               {audioComponent}
             </Col>
-            <Col sm="6">
+            <Col md="6">
               <AudioSpeed
                 onChange={this.onAudioSpeedChange}
                 show={!_isEmpty(this.state.audioUrl)}

@@ -29,6 +29,18 @@ export default class MyDocument extends Document {
             rel="stylesheet"
           />
           <title>Read To Me</title>
+          <script
+            async
+            src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-9823814916035262",
+                enable_page_level_ads: true
+              });`
+            }}
+          />
         </Head>
         <body>
           <Main />

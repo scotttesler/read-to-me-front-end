@@ -3,16 +3,19 @@ import _get from "lodash/get";
 import fetch from "isomorphic-unfetch";
 import Article from "../components/article";
 import ArticleUrlForm from "../components/article-url-form";
-import AudioSpeed from "../components/audio-speed";
+import Audio from "../components/audio";
 import Error from "../components/error";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { Col, Container, Row } from "reactstrap";
 import { parseQueryString } from "../lib/url";
 import { withRouter } from "next/router";
+import { Container } from "reactstrap";
 
-const API_URL_BASE = process.env.IS_STATIC ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production" : "/production";
+const API_URL_BASE =
+  process.env.NODE_ENV !== "production" || process.env.IS_STATIC
+    ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production"
+    : "/production";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
@@ -50,8 +53,6 @@ class Index extends React.Component {
       const query = parseQueryString();
 
       this.props.router.push("/", { query: { ...query, audioSpeed } });
-
-      this.refs.audio.playbackRate = audioSpeed;
     });
   };
 
@@ -92,17 +93,12 @@ class Index extends React.Component {
           if (!res.ok) throw new Error("Erroring converting website to audio.");
           audioUrl = (await res.json()).url;
 
-          this.setState(
-            {
-              article,
-              audioUrl,
-              articleUrl: article.canonicalLink,
-              isLoading: false
-            },
-            () => {
-              this.refs.audio.playbackRate = this.state.audioSpeed;
-            }
-          );
+          this.setState({
+            article,
+            audioUrl,
+            articleUrl: article.canonicalLink,
+            isLoading: false
+          });
         } catch (err) {
           console.error(err);
           this.setState({
@@ -120,9 +116,11 @@ class Index extends React.Component {
 
   render() {
     const audioComponent = _isEmpty(this.state.audioUrl) ? null : (
-      <audio autoPlay controls ref="audio" src={this.state.audioUrl}>
-        Your browser does not support the <code>audio</code> element.
-      </audio>
+      <Audio
+        audioSpeed={this.state.audioSpeed}
+        audioUrl={this.state.audioUrl}
+        onAudioSpeedChange={this.onAudioSpeedChange}
+      />
     );
 
     const submitButtonText = this.state.isLoading ? (
@@ -146,19 +144,9 @@ class Index extends React.Component {
             submitButtonText={submitButtonText}
             voiceId={this.state.voiceId}
           />
-          <Row style={{ padding: "2rem 0" }}>
-            <Col sm="6" style={{ textAlign: "center" }}>
-              {audioComponent}
-            </Col>
-            <Col sm="6">
-              <AudioSpeed
-                onChange={this.onAudioSpeedChange}
-                show={!_isEmpty(this.state.audioUrl)}
-                value={this.state.audioSpeed}
-              />
-            </Col>
-          </Row>
         </Container>
+
+        {audioComponent}
         <Article article={this.state.article} />
       </div>
     );

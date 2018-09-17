@@ -6,7 +6,7 @@
   },
   "bugs": {
     "email": "scottiet123@gmail.com",
-    "url": "https://github.com/scotttesler/read-to-me-frontend/issues"
+    "url": "https://github.com/scotttesler/read-to-me-front-end/issues"
   },
   "dependencies": {
     "isomorphic-unfetch": "^2.1.1",
@@ -18,7 +18,7 @@
     "reactstrap": "^6.4.0"
   },
   "description": "Front end for ReadToMe.app",
-  "homepage": "https://github.com/scotttesler/read-to-me-frontend",
+  "homepage": "https://github.com/scotttesler/read-to-me-front-end",
   "keywords": [
     "read",
     "read-to-me",
@@ -30,7 +30,7 @@
   "name": "read-to-me-frontend",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/stesler/read-to-me-frontend.git"
+    "url": "git+ssh://git@github.com:scotttesler/read-to-me-front-end.git"
   },
   "scripts": {
     "build": "next build",

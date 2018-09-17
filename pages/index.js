@@ -1,5 +1,4 @@
 import _isEmpty from "lodash/isEmpty";
-import _get from "lodash/get";
 import fetch from "isomorphic-unfetch";
 import Article from "../components/article";
 import ArticleUrlForm from "../components/article-url-form";

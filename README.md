@@ -5,6 +5,12 @@ _Enter an article URL, get audio._
 [![JavaScript Style Guide: Prettier](https://img.shields.io/badge/code%20style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier "Prettier")
 [![Dependencies](https://david-dm.org/scotttesler/read-to-me-front-end.svg)](https://david-dm.org/scotttesler/read-to-me-front-end "Dependencies")
 
+# TODO
+
+- [ ] Add skip backwards/forwards by X seconds.
+- [ ] Add ability to queue up articles.
+- [ ] Show related articles whose audio has already been generated?
+
 ---
 
 Copyright 2018 Scott Tesler

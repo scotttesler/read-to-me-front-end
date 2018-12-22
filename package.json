@@ -34,11 +34,11 @@
   },
   "scripts": {
     "build": "next build",
-    "deploy": "now rm -y read-to-me-frontend && now -p -e IS_STATIC=false && now alias $(pbpaste) read-to-me && now alias https://read-to-me.now.sh readtome.app && now alias readtome.app -r rules.json",
-    "deploy-static": "next build && next export && cd out && now -p -e IS_STATIC=true && now alias $(pbpaste) readtome.app",
+    "deploy": "now rm -y read-to-me-frontend && now && now alias $(pbpaste) readtome.app",
     "dev": "next",
+    "now-build": "next build && next export -o dist",
     "start": "NODE_ENV=production next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "version": "6.3.7"
 }

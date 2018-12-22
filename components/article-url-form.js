@@ -33,22 +33,20 @@ export default ({
           type="select"
           value={voiceId}
         >
-          <option value="Matthew">Matthew (US)</option>
-          <option value="Joey">Joey (US)</option>
-          <option value="Justin">Justin (US)</option>
-          <option value="Ivy">Ivy (US)</option>
-          <option value="Joanna">Joanna (US)</option>
-          <option value="Kendra">Kendra (US)</option>
-          <option value="Kimberly">Kimberly (US)</option>
-          <option value="Salli">Salli (US)</option>
-          <option value="Brian">Brian (British)</option>
-          <option value="Amy">Amy (British)</option>
-          <option value="Emma">Emma (British)</option>
-          <option value="Russell">Russell (AU)</option>
-          <option value="Nicole">Nicole (AU)</option>
-          <option value="Geraint">Geraint (Welsh)</option>
-          <option value="Aditi">Aditi (Indian)</option>
-          <option value="Raveena">Raveena (Indian)</option>
+          <option value="Matthew">Man (American)</option>
+          <option value="Brian">Man (English)</option>
+          <option value="Russell">Man (Australian)</option>
+          <option value="Geraint">Man (Welsh)</option>
+          <option value="Aditi">Man (Indian)</option>
+          <option disabled>──────────</option>
+          <option value="Kendra">Woman (American)</option>
+          <option value="Amy">Woman (English)</option>
+          <option value="Nicole">Woman (Australian)</option>
+          <option value="Raveena">Woman (Indian)</option>
+          <option disabled>──────────</option>
+          <option value="Justin">Boy (American)</option>
+          <option value="Salli">Teen Girl (American)</option>
+          <option value="Ivy">Young Girl (American)</option>
         </Input>
       </FormGroup>
       <FormGroup style={{ textAlign: "center" }}>

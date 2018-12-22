@@ -19,7 +19,7 @@ class Index extends React.Component {
   state = {
     article: {},
     articleUrl: "",
-    audioSpeed: 1.1,
+    audioSpeed: 1,
     audioUrl: "",
     errorMessage: "",
     isLoading: false,

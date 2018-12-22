@@ -40,5 +40,5 @@
     "start": "NODE_ENV=production next start",
     "test": ""
   },
-  "version": "7.0.0"
+  "version": "7.0.1"
 }

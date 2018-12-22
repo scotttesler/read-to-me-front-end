@@ -11,10 +11,7 @@ import { parseQueryString } from "../lib/url";
 import { withRouter } from "next/router";
 import { Container } from "reactstrap";
 
-const API_URL_BASE =
-  process.env.NODE_ENV !== "production" || process.env.IS_STATIC
-    ? "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production"
-    : "/production";
+const API_URL_BASE = "/api";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
@@ -22,7 +19,7 @@ class Index extends React.Component {
   state = {
     article: {},
     articleUrl: "",
-    audioSpeed: 1,
+    audioSpeed: 1.1,
     audioUrl: "",
     errorMessage: "",
     isLoading: false,

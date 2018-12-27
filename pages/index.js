@@ -11,7 +11,10 @@ import { parseQueryString } from "../lib/url";
 import { withRouter } from "next/router";
 import { Container } from "reactstrap";
 
-const API_URL_BASE = "/api";
+const API_URL_BASE =
+  process.env.NODE_ENV === "production"
+    ? "/api"
+    : "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production";
 const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
@@ -126,7 +129,10 @@ class Index extends React.Component {
     );
 
     return (
-      <div>
+      <>
+        <Head>
+          <link href="/static/css/pages/index.css" rel="stylesheet" />
+        </Head>
         <Container>
           <h1 style={{ padding: "2rem 0 4rem 0", textAlign: "center" }}>
             ReadToMe
@@ -144,7 +150,7 @@ class Index extends React.Component {
 
         {audioComponent}
         <Article article={this.state.article} />
-      </div>
+      </>
     );
   }
 }

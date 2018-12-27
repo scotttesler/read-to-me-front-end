@@ -13,6 +13,7 @@ export default class MyDocument extends Document {
           />
           <link
             href="/static/favicon.ico"
+            key="favicon"
             rel="shortcut icon"
             type="image/x-icon"
           />
@@ -24,11 +25,10 @@ export default class MyDocument extends Document {
           />
           <link
             crossOrigin="anonymous"
-            href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-            integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
             rel="stylesheet"
           />
-          <title>Read To Me</title>
         </Head>
         <body>
           <Main />

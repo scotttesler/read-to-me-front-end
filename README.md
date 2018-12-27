@@ -7,7 +7,6 @@ _Enter an article URL, get audio._
 
 # TODO
 
-- [ ] Add skip backwards/forwards by X seconds.
 - [ ] Add ability to queue up articles.
 - [ ] Show related articles whose audio has already been generated?
 

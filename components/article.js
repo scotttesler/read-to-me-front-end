@@ -7,18 +7,18 @@ export default ({ article }) => {
     <img alt="Article image" src={article.image} style={{ width: "100%" }} />
   );
 
-  const authors = _get(article, "author.0", "");
+  const publisher = _get(article, "publisher", "");
 
   const authorComponent =
-    _isEmpty(authors) || authors.includes("{{") ? null : (
+    _isEmpty(publisher) ? null : (
       <div style={{ textAlign: "center" }}>
         by{" "}
-        <span style={{ fontStyle: "italic" }}>{article.author.join(", ")}</span>
+        <span style={{ fontStyle: "italic" }}>{publisher}</span>
       </div>
     );
 
   const articleComponent = _isEmpty(article) ? null : (
-    <React.Fragment>
+    <>
       <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
         {article.title}
       </h1>
@@ -26,7 +26,7 @@ export default ({ article }) => {
       <p style={{ padding: "2rem 0", whiteSpace: "pre-wrap" }}>
         {article.text}
       </p>
-    </React.Fragment>
+    </>
   );
 
   return (

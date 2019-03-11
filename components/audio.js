@@ -9,6 +9,8 @@ class Audio extends React.Component {
 
   componentDidMount() {
     this.refs.audio.playbackRate = this.props.audioSpeed;
+
+    this.setMediaSession();
   }
 
   componentDidUpdate(prevProps) {
@@ -29,6 +31,25 @@ class Audio extends React.Component {
     return _get(this, "props.skipSeconds", this.DEFAULT_SKIP_SECONDS);
   };
 
+  setMediaSession() {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.props.articleTitle,
+        artist: this.props.articlePublisher,
+        artwork: [{ src: this.props.articleImage }]
+      });
+
+      navigator.mediaSession.setActionHandler(
+        "seekbackward",
+        this.onBackSpeedButtonClick
+      );
+      navigator.mediaSession.setActionHandler(
+        "seekforward",
+        this.onForwardSpeedButtonClick
+      );
+    }
+  }
+
   render() {
     const skipSeconds = this.getSkipSeconds();
 
@@ -40,7 +61,11 @@ class Audio extends React.Component {
               Your browser does not support the <code>audio</code> element.
             </audio>
           </Col>
-          <Col className="xs-margin-bottom" md="4" style={{ textAlign: "center" }}>
+          <Col
+            className="xs-margin-bottom"
+            md="4"
+            style={{ textAlign: "center" }}
+          >
             <ButtonGroup>
               <Button color="info" onClick={this.onBackSpeedButtonClick}>
                 <i className="fas fa-undo" /> {skipSeconds}s
@@ -63,6 +88,12 @@ class Audio extends React.Component {
 }
 
 Audio.propTypes = {
+  articleImage: PropTypes.string,
+  articlePublisher: PropTypes.string,
+  articleTitle: PropTypes.string,
+  audioSpeed: PropTypes.number,
+  audioUrl: PropTypes.string.isRequired,
+  onAudioSpeedChange: PropTypes.func,
   skipSeconds: PropTypes.number
 };
 

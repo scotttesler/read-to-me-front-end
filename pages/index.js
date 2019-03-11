@@ -1,3 +1,4 @@
+import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import fetch from "isomorphic-unfetch";
 import Article from "../components/article";
@@ -77,34 +78,7 @@ class Index extends React.Component {
           return;
         }
 
-        try {
-          const httpOptions = {
-            body: JSON.stringify({ articleUrl, voiceId: this.state.voiceId }),
-            headers: { "Content-Type": "application/json" },
-            method: "POST"
-          };
-
-          let res = await fetch(`${API_URL_BASE}/parse-website`, httpOptions);
-          if (!res.ok) throw new Error("Erroring parsing website.");
-          const article = await res.json();
-
-          res = await fetch(`${API_URL_BASE}/website-to-audio`, httpOptions);
-          if (!res.ok) throw new Error("Erroring converting website to audio.");
-          audioUrl = (await res.json()).url;
-
-          this.setState({
-            article,
-            audioUrl,
-            articleUrl: article.canonicalLink,
-            isLoading: false
-          });
-        } catch (err) {
-          console.error(err);
-          this.setState({
-            errorMessage: DEFAULT_ERROR_MESSAGE,
-            isLoading: false
-          });
-        }
+        this.fetchAudio({ articleUrl });
       }
     );
   };
@@ -113,9 +87,42 @@ class Index extends React.Component {
     this.setState({ voiceId: evt.target.value });
   };
 
+  fetchAudio = async ({ articleUrl }) => {
+    try {
+      const httpOptions = {
+        body: JSON.stringify({ articleUrl, voiceId: this.state.voiceId }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST"
+      };
+
+      let res = await fetch(`${API_URL_BASE}/parse-website`, httpOptions);
+      if (!res.ok) throw new Error("Error parsing website.");
+      const article = await res.json();
+
+      res = await fetch(`${API_URL_BASE}/website-to-audio`, httpOptions);
+      if (!res.ok) throw new Error("Error converting website to audio.");
+
+      this.setState({
+        article,
+        audioUrl: (await res.json()).url,
+        articleUrl: article.canonicalLink,
+        isLoading: false
+      });
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        errorMessage: DEFAULT_ERROR_MESSAGE,
+        isLoading: false
+      });
+    }
+  };
+
   render() {
     const audioComponent = _isEmpty(this.state.audioUrl) ? null : (
       <Audio
+        articleImage={_get(this, "state.article.image", "")}
+        articlePublisher={_get(this, "state.article.publisher", "")}
+        articleTitle={_get(this, "state.article.title", "")}
         audioSpeed={this.state.audioSpeed}
         audioUrl={this.state.audioUrl}
         onAudioSpeedChange={this.onAudioSpeedChange}

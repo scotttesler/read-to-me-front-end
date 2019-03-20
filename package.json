@@ -35,7 +35,7 @@
   },
   "scripts": {
     "build": "next build",
-    "deploy": "now rm -y read-to-me-frontend && now && now alias $(pbpaste) readtome.app",
+    "deploy": "now rm -y read-to-me-frontend && now --target production",
     "dev": "next",
     "now-build": "next build && next export -o dist",
     "start": "NODE_ENV=production next start",

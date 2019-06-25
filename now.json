@@ -1,11 +1,17 @@
 {
   "alias": ["readtome.app"],
   "builds": [
-    { "src": "package.json", "use": "@now/static-build" }
+    { 
+      "src": "package.json", 
+      "use": "@now/static-build" 
+    }
   ],
   "name": "read-to-me-frontend",
   "routes": [
-    { "src": "/api/(.*)", "dest": "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production/$1" }
+    { 
+      "src": "/api/(.*)", 
+      "dest": "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production/$1" 
+    }
   ],
   "version": 2
 }

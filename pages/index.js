@@ -138,7 +138,7 @@ class Index extends React.Component {
     return (
       <>
         <Head>
-          <link href="/static/css/pages/index.css" rel="stylesheet" />
+          <link href="/css/pages/index.css" rel="stylesheet" />
         </Head>
         <Container>
           <h1 style={{ padding: "2rem 0 4rem 0", textAlign: "center" }}>

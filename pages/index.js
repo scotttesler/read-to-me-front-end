@@ -1,165 +1,128 @@
-import _get from "lodash/get";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { Container } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _isEmpty from "lodash/isEmpty";
-import fetch from "isomorphic-unfetch";
+import _omit from "lodash/omit";
+import fetchAudio from "../lib/fetch-audio";
+import parseQueryString from "../lib/parse-query-string";
+import useIndexReducer, {
+  DISPATCHES,
+  INIT_STATE
+} from "../lib/use-index-reducer";
 import Article from "../components/article";
 import ArticleUrlForm from "../components/article-url-form";
 import Audio from "../components/audio";
 import Error from "../components/error";
-import Head from "next/head";
+import Footer from "../components/footer";
 import Link from "next/link";
-import React from "react";
-import { parseQueryString } from "../lib/url";
-import { withRouter } from "next/router";
-import { Container } from "reactstrap";
 
-const API_URL_BASE =
-  process.env.NODE_ENV === "production"
-    ? "/api"
-    : "https://zfd3nwyhac.execute-api.us-east-1.amazonaws.com/production";
-const DEFAULT_ERROR_MESSAGE = "The article could not be parsed.";
 const DEFAULT_VOICE_ID = "Matthew";
 
-class Index extends React.Component {
-  state = {
-    article: {},
-    articleUrl: "",
-    audioSpeed: 1,
-    audioUrl: "",
-    errorMessage: "",
-    isLoading: false,
-    voiceId: DEFAULT_VOICE_ID
-  };
+export default function Index() {
+  const router = useRouter();
+  const [
+    {
+      article,
+      articleTitle,
+      articleUrl,
+      audioSpeed,
+      audioUrl,
+      errorMessage,
+      isLoading,
+      voiceId
+    },
+    dispatch
+  ] = useIndexReducer();
 
-  componentDidMount() {
-    const newState = parseQueryString();
-
-    if (!_isEmpty(newState)) {
-      this.setState(newState, () => {
-        if (this.state.articleUrl) {
-          this.onSubmit({ preventDefault: () => {} });
-        }
+  useEffect(() => {
+    if (audioSpeed === INIT_STATE.audioSpeed) {
+      router.push({
+        pathname: "/",
+        query: _omit(parseQueryString(), ["audioSpeed"])
       });
+      return;
     }
-  }
 
-  onArticleUrlChange = evt => {
-    this.setState({ [evt.target.name]: evt.target.value });
-  };
-
-  onAudioSpeedChange = value => {
-    const audioSpeed = Math.round(value * 100) / 100;
-
-    this.setState({ audioSpeed }, () => {
-      const query = parseQueryString();
-
-      this.props.router.push("/", { query: { ...query, audioSpeed } });
+    router.push({
+      pathname: "/",
+      query: { ...parseQueryString(), audioSpeed }
     });
-  };
+  }, [audioSpeed]);
 
-  onSubmit = evt => {
-    evt.preventDefault();
+  useEffect(() => {
+    if (!isLoading) return;
 
-    let articleText = "";
-    let articleTitle = "";
-    let audioUrl = "";
-    let errorMessage = "";
-
-    this.setState(
-      { articleText, articleTitle, audioUrl, errorMessage, isLoading: true },
-      async () => {
-        const articleUrl = this.state.articleUrl;
-        const query = parseQueryString();
-        this.props.router.push("/", {
-          query: { ...query, articleUrl, voiceId: this.state.voiceId }
-        });
-
-        if (_isEmpty(articleUrl)) {
-          this.setState({ isLoading: false });
-          return;
-        }
-
-        this.fetchAudio({ articleUrl });
-      }
-    );
-  };
-
-  onVoiceIDChange = evt => {
-    this.setState({ voiceId: evt.target.value });
-  };
-
-  fetchAudio = async ({ articleUrl }) => {
-    try {
-      const httpOptions = {
-        body: JSON.stringify({ articleUrl, voiceId: this.state.voiceId }),
-        headers: { "Content-Type": "application/json" },
-        method: "POST"
-      };
-
-      let res = await fetch(`${API_URL_BASE}/parse-website`, httpOptions);
-      if (!res.ok) throw new Error("Error parsing website.");
-      const article = await res.json();
-
-      res = await fetch(`${API_URL_BASE}/website-to-audio`, httpOptions);
-      if (!res.ok) throw new Error("Error converting website to audio.");
-
-      this.setState({
-        article,
-        audioUrl: (await res.json()).url,
-        articleUrl: article.canonicalLink,
-        isLoading: false
+    if (articleUrl === INIT_STATE.articleUrl) {
+      router.push({
+        pathname: "/",
+        query: _omit(parseQueryString(), ["articleUrl", "voiceId"])
       });
-    } catch (err) {
-      console.error(err);
-      this.setState({
-        errorMessage: DEFAULT_ERROR_MESSAGE,
-        isLoading: false
-      });
+      dispatch({ payload: false, type: DISPATCHES.SET_IS_LOADING });
+      return;
     }
-  };
 
-  render() {
-    const audioComponent = _isEmpty(this.state.audioUrl) ? null : (
-      <Audio
-        articleImage={_get(this, "state.article.image", "")}
-        articlePublisher={_get(this, "state.article.publisher", "")}
-        articleTitle={_get(this, "state.article.title", "")}
-        audioSpeed={this.state.audioSpeed}
-        audioUrl={this.state.audioUrl}
-        onAudioSpeedChange={this.onAudioSpeedChange}
-      />
-    );
+    router.push({
+      pathname: "/",
+      query: { ...parseQueryString(), articleUrl, voiceId }
+    });
 
-    const submitButtonText = this.state.isLoading ? (
-      <i className="fas fa-spinner fa-spin" />
-    ) : (
-      "Submit"
-    );
+    fetchAudio({ articleUrl, dispatch, voiceId });
+  }, [isLoading]);
 
-    return (
-      <>
-        <Head>
-          <link href="/css/pages/index.css" rel="stylesheet" />
-        </Head>
-        <Container>
-          <h1 style={{ padding: "2rem 0 4rem 0", textAlign: "center" }}>
-            ReadToMe
-          </h1>
-          <Error text={this.state.errorMessage} />
-          <ArticleUrlForm
-            articleUrl={this.state.articleUrl}
-            onArticleUrlChange={this.onArticleUrlChange}
-            onSubmit={this.onSubmit}
-            onVoiceIDChange={this.onVoiceIDChange}
-            submitButtonText={submitButtonText}
-            voiceId={this.state.voiceId}
-          />
-        </Container>
-
-        {audioComponent}
-        <Article article={this.state.article} />
-      </>
-    );
+  function onArticleUrlChange(evt) {
+    dispatch({ payload: evt.target.value, type: DISPATCHES.SET_ARTICLE_URL });
   }
-}
 
-export default withRouter(Index);
+  function onAudioSpeedChange(val) {
+    dispatch({
+      payload: Math.round(val * 100) / 100,
+      type: DISPATCHES.SET_AUDIO_SPEED
+    });
+  }
+
+  function onSubmit(evt) {
+    evt.preventDefault();
+    dispatch({ type: DISPATCHES.SUBMIT });
+  }
+
+  function onVoiceIdChange(evt) {
+    dispatch({ payload: evt.target.value, type: DISPATCHES.SET_VOICE_ID });
+  }
+
+  return (
+    <>
+      <Container>
+        <h1 style={{ padding: "2rem 0 4rem 0", textAlign: "center" }}>
+          ReadToMe
+        </h1>
+        <Error text={errorMessage} />
+        <ArticleUrlForm
+          articleUrl={articleUrl}
+          onArticleUrlChange={onArticleUrlChange}
+          onSubmit={onSubmit}
+          onVoiceIdChange={onVoiceIdChange}
+          submitButtonText={
+            isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Submit"
+          }
+          voiceId={voiceId}
+        />
+      </Container>
+
+      {_isEmpty(audioUrl) ? null : (
+        <Audio
+          articleImage={article?.image ?? ""}
+          articlePublisher={article?.publisher ?? ""}
+          articleTitle={article?.title ?? ""}
+          audioSpeed={audioSpeed}
+          audioUrl={audioUrl}
+          onAudioSpeedChange={onAudioSpeedChange}
+        />
+      )}
+
+      <Article article={article} />
+      <Footer />
+    </>
+  );
+}

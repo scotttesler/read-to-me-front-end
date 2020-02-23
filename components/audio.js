@@ -1,100 +1,78 @@
-import _get from "lodash/get";
-import AudioSpeed from "./audio-speed";
-import PropTypes from "prop-types";
-import React from "react";
+import { faRedo, faUndo } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useRef } from "react";
 import { Button, ButtonGroup, Col, Container, Row } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AudioSpeed from "./audio-speed";
 
-class Audio extends React.Component {
-  DEFAULT_SKIP_SECONDS = 10;
+export default function Audio({
+  articleImage = "",
+  articlePublisher = "",
+  articleTitle = "",
+  audioSpeed = 1,
+  audioUrl = "",
+  onAudioSpeedChange = () => {},
+  skipSeconds = 10
+}) {
+  const refAudio = useRef(null);
 
-  componentDidMount() {
-    this.refs.audio.playbackRate = this.props.audioSpeed;
+  useEffect(() => setMediaSession(), []);
+  useEffect(() => {
+    refAudio.current.playbackRate = audioSpeed;
+  }, [audioSpeed]);
 
-    this.setMediaSession();
+  function handleBackSpeedButtonClick() {
+    refAudio.current.currentTime -= skipSeconds;
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.audioSpeed !== prevProps.audioSpeed) {
-      this.refs.audio.playbackRate = this.props.audioSpeed;
-    }
+  function handleForwardSpeedButtonClick() {
+    refAudio.current.currentTime += skipSeconds;
   }
 
-  onBackSpeedButtonClick = () => {
-    this.refs.audio.currentTime -= this.getSkipSeconds();
-  };
+  function setMediaSession() {
+    if (!("mediaSession" in navigator)) return;
 
-  onForwardSpeedButtonClick = () => {
-    this.refs.audio.currentTime += this.getSkipSeconds();
-  };
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: articleTitle,
+      artist: articlePublisher,
+      artwork: [{ src: articleImage }]
+    });
 
-  getSkipSeconds = () => {
-    return _get(this, "props.skipSeconds", this.DEFAULT_SKIP_SECONDS);
-  };
-
-  setMediaSession() {
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: this.props.articleTitle,
-        artist: this.props.articlePublisher,
-        artwork: [{ src: this.props.articleImage }]
-      });
-
-      navigator.mediaSession.setActionHandler(
-        "seekbackward",
-        this.onBackSpeedButtonClick
-      );
-      navigator.mediaSession.setActionHandler(
-        "seekforward",
-        this.onForwardSpeedButtonClick
-      );
-    }
-  }
-
-  render() {
-    const skipSeconds = this.getSkipSeconds();
-
-    return (
-      <div style={{ background: "white", position: "sticky", top: "0px" }}>
-        <Row style={{ padding: "2rem 0" }}>
-          <Col md="4" style={{ textAlign: "center" }}>
-            <audio autoPlay controls ref="audio" src={this.props.audioUrl}>
-              Your browser does not support the <code>audio</code> element.
-            </audio>
-          </Col>
-          <Col
-            className="xs-margin-bottom"
-            md="4"
-            style={{ textAlign: "center" }}
-          >
-            <ButtonGroup>
-              <Button color="info" onClick={this.onBackSpeedButtonClick}>
-                <i className="fas fa-undo" /> {skipSeconds}s
-              </Button>
-              <Button color="info" onClick={this.onForwardSpeedButtonClick}>
-                <i className="fas fa-redo" /> {skipSeconds}s
-              </Button>
-            </ButtonGroup>
-          </Col>
-          <Col md="4">
-            <AudioSpeed
-              onChange={this.props.onAudioSpeedChange}
-              value={this.props.audioSpeed}
-            />
-          </Col>
-        </Row>
-      </div>
+    navigator.mediaSession.setActionHandler(
+      "seekbackward",
+      handleBackSpeedButtonClick
+    );
+    navigator.mediaSession.setActionHandler(
+      "seekforward",
+      handleForwardSpeedButtonClick
     );
   }
+
+  return (
+    <div style={{ background: "white", position: "sticky", top: "0px" }}>
+      <Row style={{ padding: "2rem 0" }}>
+        <Col md="4" style={{ textAlign: "center" }}>
+          <audio autoPlay controls ref={refAudio} src={audioUrl}>
+            Your browser does not support the <code>audio</code> element.
+          </audio>
+        </Col>
+        <Col
+          className="xs-margin-bottom"
+          md="4"
+          style={{ textAlign: "center" }}
+        >
+          <ButtonGroup>
+            <Button color="info" onClick={handleBackSpeedButtonClick}>
+              <FontAwesomeIcon icon={faUndo} /> {skipSeconds}s
+            </Button>
+            <Button color="info" onClick={handleForwardSpeedButtonClick}>
+              <FontAwesomeIcon icon={faRedo} /> {skipSeconds}s
+            </Button>
+          </ButtonGroup>
+        </Col>
+        <Col md="4">
+          <AudioSpeed onChange={onAudioSpeedChange} value={audioSpeed} />
+        </Col>
+      </Row>
+    </div>
+  );
 }
-
-Audio.propTypes = {
-  articleImage: PropTypes.string,
-  articlePublisher: PropTypes.string,
-  articleTitle: PropTypes.string,
-  audioSpeed: PropTypes.number,
-  audioUrl: PropTypes.string.isRequired,
-  onAudioSpeedChange: PropTypes.func,
-  skipSeconds: PropTypes.number
-};
-
-export default Audio;

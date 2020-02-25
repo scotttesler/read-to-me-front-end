@@ -1,6 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
-class MyDocument extends Document {
+export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx);
     return { ...initialProps };
@@ -23,12 +23,8 @@ class MyDocument extends Document {
           />
           <link
             crossOrigin="anonymous"
-            href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/journal/bootstrap.min.css"
-            integrity="sha384-ciphE0NCAlD2/N6NUApXAN2dAs/vcSAOTzyE202jJx3oS8n4tAQezRgnlHqcJ59C"
-            rel="stylesheet"
-          />
-          <link
-            href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
+            href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/journal/bootstrap.min.css"
+            integrity="sha384-0d2eTc91EqtDkt3Y50+J9rW3tCXJWw6/lDgf1QNHLlV0fadTyvcA120WPsSOlwga"
             rel="stylesheet"
           />
         </Head>
@@ -40,5 +36,3 @@ class MyDocument extends Document {
     );
   }
 }
-
-export default MyDocument;

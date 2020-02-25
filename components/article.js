@@ -1,21 +1,18 @@
-import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
 import { Container } from "reactstrap";
+import _isEmpty from "lodash/isEmpty";
 
-export default ({ article }) => {
-  const articleImage = _isEmpty(_get(article, "image", "")) ? null : (
+export default function Article({ article = {} }) {
+  const articleImage = _isEmpty(article?.image ?? "") ? null : (
     <img alt="Article image" src={article.image} style={{ width: "100%" }} />
   );
 
-  const publisher = _get(article, "publisher", "");
+  const publisher = article?.publisher ?? "";
 
-  const authorComponent =
-    _isEmpty(publisher) ? null : (
-      <div style={{ textAlign: "center" }}>
-        by{" "}
-        <span style={{ fontStyle: "italic" }}>{publisher}</span>
-      </div>
-    );
+  const authorComponent = _isEmpty(publisher) ? null : (
+    <div style={{ textAlign: "center" }}>
+      by <span style={{ fontStyle: "italic" }}>{publisher}</span>
+    </div>
+  );
 
   const articleComponent = _isEmpty(article) ? null : (
     <>
@@ -32,16 +29,7 @@ export default ({ article }) => {
   return (
     <div>
       {articleImage}
-      <Container>
-        {articleComponent}
-        <p style={{ padding: "2rem 0 0 0", textAlign: "center" }}>
-          Built with <span style={{ color: "red", fontSize: "1.1rem" }}>♥</span>{" "}
-          by{" "}
-          <a href="https://github.com/scotttesler" target="_href">
-            Scott Tesler
-          </a>
-        </p>
-      </Container>
+      <Container>{articleComponent}</Container>
     </div>
   );
-};
+}

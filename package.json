@@ -31,7 +31,7 @@
   ],
   "license": "MIT",
   "main": "index.js",
-  "name": "read-to-me-frontend",
+  "name": "read-to-me-front-end",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:scotttesler/read-to-me-front-end.git"

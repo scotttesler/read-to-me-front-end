@@ -5,7 +5,7 @@ export default function AudioSpeed({
   value = 1,
   max = 3,
   min = 0,
-  step = 0.1
+  step = 0.1,
 }) {
   return (
     <div className="component">

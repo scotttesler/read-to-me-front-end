@@ -11,7 +11,7 @@ export default function Audio({
   audioSpeed = 1,
   audioUrl = "",
   onAudioSpeedChange = () => {},
-  skipSeconds = 10
+  skipSeconds = 10,
 }) {
   const refAudio = useRef(null);
 
@@ -34,7 +34,7 @@ export default function Audio({
     navigator.mediaSession.metadata = new MediaMetadata({
       title: articleTitle,
       artist: articlePublisher,
-      artwork: [{ src: articleImage }]
+      artwork: [{ src: articleImage }],
     });
 
     navigator.mediaSession.setActionHandler(

@@ -6,7 +6,7 @@ export default function ArticleUrlForm({
   onSubmit = () => {},
   onVoiceIdChange = () => {},
   submitButtonText = "",
-  voiceId = ""
+  voiceId = "",
 }) {
   return (
     <Form onSubmit={onSubmit}>

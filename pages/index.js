@@ -1,5 +1,5 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Container } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,45 +9,41 @@ import fetchAudio from "../lib/fetch-audio";
 import parseQueryString from "../lib/parse-query-string";
 import useIndexReducer, {
   DISPATCHES,
-  INIT_STATE
+  INIT_STATE,
 } from "../lib/use-index-reducer";
 import Article from "../components/article";
 import ArticleUrlForm from "../components/article-url-form";
 import Audio from "../components/audio";
 import Error from "../components/error";
 import Footer from "../components/footer";
-import Link from "next/link";
-
-const DEFAULT_VOICE_ID = "Matthew";
 
 export default function Index() {
   const router = useRouter();
   const [
     {
       article,
-      articleTitle,
       articleUrl,
       audioSpeed,
       audioUrl,
       errorMessage,
       isLoading,
-      voiceId
+      voiceId,
     },
-    dispatch
+    dispatch,
   ] = useIndexReducer();
 
   useEffect(() => {
     if (audioSpeed === INIT_STATE.audioSpeed) {
       router.push({
         pathname: "/",
-        query: _omit(parseQueryString(), ["audioSpeed"])
+        query: _omit(parseQueryString(), ["audioSpeed"]),
       });
       return;
     }
 
     router.push({
       pathname: "/",
-      query: { ...parseQueryString(), audioSpeed }
+      query: { ...parseQueryString(), audioSpeed },
     });
   }, [audioSpeed]);
 
@@ -57,7 +53,7 @@ export default function Index() {
     if (articleUrl === INIT_STATE.articleUrl) {
       router.push({
         pathname: "/",
-        query: _omit(parseQueryString(), ["articleUrl", "voiceId"])
+        query: _omit(parseQueryString(), ["articleUrl", "voiceId"]),
       });
       dispatch({ payload: false, type: DISPATCHES.SET_IS_LOADING });
       return;
@@ -65,7 +61,7 @@ export default function Index() {
 
     router.push({
       pathname: "/",
-      query: { ...parseQueryString(), articleUrl, voiceId }
+      query: { ...parseQueryString(), articleUrl, voiceId },
     });
 
     fetchAudio({ articleUrl, dispatch, voiceId });
@@ -78,7 +74,7 @@ export default function Index() {
   function onAudioSpeedChange(val) {
     dispatch({
       payload: Math.round(val * 100) / 100,
-      type: DISPATCHES.SET_AUDIO_SPEED
+      type: DISPATCHES.SET_AUDIO_SPEED,
     });
   }
 
